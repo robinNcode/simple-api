@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Services\AuthService;
 use CodeIgniter\Config\BaseService;
 
 /**
@@ -19,14 +20,15 @@ use CodeIgniter\Config\BaseService;
  */
 class Services extends BaseService
 {
-    /*
-     * public static function example($getShared = true)
-     * {
-     *     if ($getShared) {
-     *         return static::getSharedInstance('example');
-     *     }
-     *
-     *     return new \CodeIgniter\Example();
-     * }
+    /**
+     * @param bool $getShared
+     * @return AuthService|object
      */
+    public static function auth(bool $getShared = true){
+        if($getShared){
+            return static::getSharedInstance('authRouteProtector');
+        }
+
+        return new AuthService();
+    }
 }
