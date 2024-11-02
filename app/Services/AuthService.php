@@ -23,38 +23,12 @@ class AuthService
     }
 
     /**
-     * Protect routes with specific exclusions.
-     *
-     * @param RequestInterface $request
-     * @param string $routes Array of routes to protect
-     * @param array $options Optional configuration like 'except' for route exclusions
-     * @return ResponseInterface|null
-     */
-    public function routes(RequestInterface $request, string $routes, array $options = []): ?ResponseInterface
-    {
-        $path = $request->getPath(); // Current request path
-        $except = $options['except'] ?? []; // Excluded routes
-        //dd($path, $routes, $except);
-        // Check if current route is in excluded routes
-        if (in_array($path, $except)) {
-            return null; // Allow access to excluded routes
-        }
-
-        // Protect the specified routes
-        if (str_starts_with($path, $routes)) {
-            return $this->authorize($request);
-        }
-
-        return null; // Allow access if authorized or not in protected routes
-    }
-
-    /**
      * Custom authorization logic (e.g., token validation)
      *
      * @param RequestInterface $request
      * @return  ResponseInterface if authorized, false otherwise
      */
-    private function authorize(RequestInterface $request): ResponseInterface
+    public function authorize(RequestInterface $request): ResponseInterface
     {
         $headers = $request->headers();
         //$token = $headers['Authorization']->getValue();
@@ -92,7 +66,8 @@ class AuthService
                     $predis->set($token, true);
                 }
                 else{
-
+                    // Token is invalid
+                    $else = 1;
                 }
                 return $this->failUnauthorized('Invalid token!');
             }

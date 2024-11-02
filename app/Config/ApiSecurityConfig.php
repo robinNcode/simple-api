@@ -18,7 +18,7 @@ class ApiSecurityConfig extends BaseConfig
      *
      * @var array
      */
-    public array $defaultExclusions = ['','login', 'register'];
+    public array $defaultExclusions = ['/','login', 'register'];
 
     /**
      * The default token expiration time

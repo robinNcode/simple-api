@@ -18,7 +18,7 @@ $routes->post('register', 'AuthController::register');
 /**
  * API Routes
  */
-$routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
+$routes->group('api', ['namespace' => 'App\Controllers\Api', 'filter' => 'auth-service'], function ($routes) {
     $routes->group('v1', function ($routes) {
         //Employee Department Routes
         $routes->group('employee', function ($routes) {
@@ -38,8 +38,3 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
         });
     });
 });
-
-$authService = service('authService');
-
-// Protect the 'api' route with the 'auth' service
-$authService->routes(service('request'), 'api', ['except' => ['','login', 'register']]);

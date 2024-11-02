@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\AuthServiceFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -34,6 +35,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'auth-service'  => AuthServiceFilter::class,
     ];
 
     /**
@@ -72,6 +74,7 @@ class Filters extends BaseFilters
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'auth-service',
         ],
         'after' => [
             // 'honeypot',
@@ -103,5 +106,7 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        'auth-service' => ['before' => ['api/*']],
+    ];
 }
