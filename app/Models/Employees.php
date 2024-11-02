@@ -118,8 +118,15 @@ class Employees extends Model
     public function employeeWithDepartments(int $employeeId = null): array
     {
         $query = $this->db->table('employees')
-            ->select('employees.id, employees.first_name, employees.last_name, employees.email, employees.phone, employees.address, employees.created_at, employees.updated_at, employee_departments.name as department')
-            ->join('employee_departments', 'employee_departments.id = employees.department_id', 'left');
+            ->select('
+                employees.*,
+                employee_designations.name as designation,
+                employee_designations.code as designation_code,
+                CONCAT(employee_designations.short_name, " - ", employee_designations.code) as short_name,
+                employee_departments.name as department
+            ')
+            ->join('employee_designations', 'employee_designations.id = employees.designation_id', 'inner')
+            ->join('employee_departments', 'employee_departments.id = employee_designations.department_id', 'right');
 
         if($employeeId){
             $query->where('id', $employeeId);

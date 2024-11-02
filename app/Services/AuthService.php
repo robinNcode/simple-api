@@ -44,7 +44,6 @@ class AuthService
             // Loop through each allowed browser to see if it matches the user-agent
             $isAllowed = false;
             foreach ($allowedBrowsers as $browser) {
-                d($browser, $userAgent);
                 if (stripos($userAgent, $browser) !== false) {
                     $isAllowed = true;
                     break;
@@ -90,18 +89,14 @@ class AuthService
         $token = $request->getHeaderLine('Authorization');
         $predis = new Client();
 
-        if (!$token) {
-            return false; // No token provided
+        if (!empty($token)) {
+            $tokenData = $predis->get($token);
+            // Decode and return the token data
+            if(!empty($tokenData)){
+                return json_decode($tokenData, true);
+            }
         }
 
-        // Check if the token exists in Redis
-        $tokenData = $predis->get("Bearer:{$token}");
-
-        if (!$tokenData) {
-            return false; // Token not found or expired
-        }
-
-        // Decode and return the token data
-        return json_decode($tokenData, true);
+        return false;
     }
 }
