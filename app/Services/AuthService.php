@@ -26,23 +26,35 @@ class AuthService
      * Custom authorization logic (e.g., token validation)
      *
      * @param RequestInterface $request
-     * @return  ResponseInterface if authorized, false otherwise
+     * @return  ResponseInterface|null if authorized, false otherwise
      */
-    public function authorize(RequestInterface $request): ResponseInterface
+    public function authorize(RequestInterface $request): ?ResponseInterface
     {
+        $current_path = $request->getPath();
+        if(in_array($current_path, $this->apiSecurityOptions->defaultExclusions)){
+            return null;
+        }
+
         $headers = $request->headers();
         //$token = $headers['Authorization']->getValue();
 
         // Check if browser is allowed ...
         if ($this->apiSecurityOptions->isCheckUserAgent) {
             $userAgent = $headers['User-Agent']->getValue();
+            $allowedBrowsers = $this->apiSecurityOptions->allowedBrowsers;
 
-            // Create a regex pattern from the allowed browsers array, joining them with "|"
-            $pattern = '/' . implode('|', array_map('preg_quote', $this->apiSecurityOptions->allowedBrowsers)) . '/i';
+            // Loop through each allowed browser to see if it matches the user-agent
+            $isAllowed = false;
+            foreach ($allowedBrowsers as $browser) {
+                d($browser, $userAgent);
+                if (stripos($userAgent, $browser) !== false) {
+                    $isAllowed = true;
+                    break;
+                }
+            }
 
-            // Check if the User-Agent matches any of the allowed browsers
-            if (!preg_match($pattern, $userAgent)) {
-                return $this->failForbidden('Browser not allowed!');
+            if(!$isAllowed){
+                return $this->failUnauthorized('Browser is not Allowed!');
             }
         }
 

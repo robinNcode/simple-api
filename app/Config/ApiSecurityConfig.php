@@ -18,7 +18,7 @@ class ApiSecurityConfig extends BaseConfig
      *
      * @var array
      */
-    public array $defaultExclusions = ['/','login', 'register'];
+    public array $defaultExclusions = ['','login', 'register'];
 
     /**
      * The default token expiration time
@@ -88,7 +88,7 @@ class ApiSecurityConfig extends BaseConfig
      *
      * @var array
      */
-    public array $allowedBrowsers = ['Chrome', 'Safari', 'Opera', 'Edge'];
+    public array $allowedBrowsers = ['Chrome', 'Firefox', 'Safari', 'Opera', 'Edge'];
 
     /**
      * The default allowed OS
