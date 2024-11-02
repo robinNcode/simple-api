@@ -10,10 +10,10 @@ $routes->get('/', 'Home::index');
 /**
  * Auth Routes
  */
-$routes->get('login', 'AuthController::loginView');
-$routes->post('login', 'AuthController::login');
-$routes->get('register', 'AuthController::registerView');
-$routes->post('register', 'AuthController::register');
+$routes->get('login', 'Api\AuthController::loginView');
+$routes->post('login', 'Api\AuthController::login');
+$routes->get('register', 'Api\AuthController::registerView');
+$routes->post('register', 'Api\AuthController::register');
 
 /**
  * API Routes

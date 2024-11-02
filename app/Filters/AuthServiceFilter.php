@@ -27,6 +27,7 @@ class AuthServiceFilter implements FilterInterface
     {
         $authService = service('authService');
         $response = $authService->authorize($request);
+        //dd($response);
 
         if(!is_null($response) && $response->getStatusCode() !== 200){
             return $response;

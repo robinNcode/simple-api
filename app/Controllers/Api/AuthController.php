@@ -39,26 +39,26 @@ class AuthController extends BaseController
      */
     public function login(): ResponseInterface
     {
-        $username = $this->request->getPost('email');
+        $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
-
         // Validate user credentials
-        $user = $this->userModel->where('username', $username)->first();
+        $user = $this->userModel->where('email', $email)->first();
 
         if($this->isUserLoggedIn($user['id'])){
             return $this->fail('User already logged in!');
         }
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && ($password == $user['password'])) {
             // Generate token
-            $token = bin2hex(random_bytes(16));
+            $token = bin2hex(random_bytes(64));
             $expiry = 3600; // 1 hour in seconds
 
-            // Save token to Redis with an expiry
-            $this->redis->set("Bearer:{$token}", json_encode([
+            // Save token to Redis with an expiry, using setex to expire the key in seconds
+            $this->redis->setex("Bearer:{$token}", $expiry, json_encode([
                 'user_id' => $user['id'],
-                'username' => $user['username']
-            ]), $expiry);
+                'email' => $user['email']
+            ]));
+
 
             // Return the token to the client
             return $this->respond([
@@ -123,18 +123,19 @@ class AuthController extends BaseController
         $postedData = [
             'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
-            'password' => $this->request->getPost('password'),
-            'is_service_registration' => $this->request->getPost('is_service_registration') ?? true
+            'password' => $this->request->getPost('password')
         ];
 
-        if($this->userModel->save($postedData)){
+        if($this->userModel->insert($postedData)){
             $data = [
+                'status' => ResponseInterface::HTTP_OK,
                 'status_type' => 'success',
                 'message' => 'User registered successfully!',
             ];
         }
         else{
             $data = [
+                'status' => ResponseInterface::HTTP_NOT_FOUND,
                 'status_type' => 'error',
                 'message' => 'Failed to register user!'
             ];
