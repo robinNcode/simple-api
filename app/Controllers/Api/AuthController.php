@@ -5,16 +5,20 @@ use App\Models\Users;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
 use Predis\Client;
+use Random\RandomException;
+use ReflectionException;
 
 class AuthController extends BaseController
 {
     use ResponseTrait;
 
     private Users $userModel;
+    private Client $redis;
 
     public function __construct()
     {
         $this->userModel = new Users();
+        $this->redis = new Client();
     }
 
     /**
@@ -31,32 +35,61 @@ class AuthController extends BaseController
      * Log the user in...
      * @return ResponseInterface
      * [POST] /login
+     * @throws RandomException
      */
     public function login(): ResponseInterface
     {
-        $credentials = [
-            'email' => $this->request->getPost('email'),
-            'password' => $this->request->getPost('password')
-        ];
+        $username = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
 
-        if(auth()->loggedIn()){
-            return $this->fail('User is already logged in');
+        // Validate user credentials
+        $user = $this->userModel->where('username', $username)->first();
+
+        if($this->isUserLoggedIn($user['id'])){
+            return $this->fail('User already logged in!');
         }
 
-        $loginAttempt = auth()->attempt($credentials);
-        if(!$loginAttempt->isOK()){
-            return $this->fail('Invalid login credentials');
-        }
-        else{
-            $userData = $this->userModel->find(auth()->id());
-            $authToken = $userData->generateAccessToken('default');
+        if ($user && password_verify($password, $user['password'])) {
+            // Generate token
+            $token = bin2hex(random_bytes(16));
+            $expiry = 3600; // 1 hour in seconds
 
+            // Save token to Redis with an expiry
+            $this->redis->set("Bearer:{$token}", json_encode([
+                'user_id' => $user['id'],
+                'username' => $user['username']
+            ]), $expiry);
+
+            // Return the token to the client
             return $this->respond([
-                'message' => 'Login successful!',
-                'user' => $userData,
-                'token' => $authToken->raw_token
+                'status' => ResponseInterface::HTTP_OK,
+                'token' => $token,
+                'expires_in' => $expiry
             ]);
         }
+
+        // Unauthorized response for invalid credentials
+        return $this->failUnauthorized("Invalid login credentials!");
+    }
+
+     /**
+      * Check if the user is already logged in with a valid token.
+      * @param int $userId
+      * @return bool|string Returns the token if valid, otherwise false.
+      */
+    public function isUserLoggedIn(int $userId): bool|string
+    {
+        // Check Redis for an existing token for the given user ID
+        $token = $this->redis->get("Bearer:{$userId}");
+
+        if ($token) {
+            // Optionally, you can add extra checks here for the token's validity
+            // For instance, you could decode the token or check its expiration.
+
+            return $token; // Token is valid
+        }
+
+        return false; // No valid token found
     }
 
     /**
@@ -83,6 +116,7 @@ class AuthController extends BaseController
      * Register a new user...
      * @return ResponseInterface
      * [POST] /register
+     * @throws ReflectionException
      */
     public function register(): ResponseInterface
     {
@@ -93,56 +127,20 @@ class AuthController extends BaseController
             'is_service_registration' => $this->request->getPost('is_service_registration') ?? true
         ];
 
-        // Create a new user entity
-        $user = new User();
-        $userData = $user->fill($postedData);
-
-        if($this->userModel->save($userData)){
-            // Generate token
-            $token = $userData->generateAccessToken('default');
-
+        if($this->userModel->save($postedData)){
             $data = [
-                'status' => 'success',
+                'status_type' => 'success',
                 'message' => 'User registered successfully!',
-                'access_token' => $token->raw_token
             ];
         }
         else{
             $data = [
-                'status' => 'error',
+                'status_type' => 'error',
                 'message' => 'Failed to register user!'
             ];
         }
 
-        // if is_service_registration true then save user data on redis server
-        if($postedData['is_service_registration']){
-            $postedData = [
-                'status' => 'success',
-                'message' => 'User registered successfully in Redis!',
-                'access_token' => $data['access_token'],
-            ];
-
-            $redis = new Client();
-            $redis_status = $redis->set($postedData['email'], json_encode($postedData));
-
-            if(!$redis_status){
-                $data = [
-                    'status' => 'error',
-                    'message' => 'Failed to save user data in Redis!'
-                ];
-            }
-        }
-
         return $this->respond($data);
-    }
-
-    /**
-     * Validate the authentication token in the header by communicating with Redis.
-     * Blocks the request if the token is invalid, expired, or missing...
-     * [GET] /api/v1/auth/validate
-     */
-    public function validateRedisToken(){
-        dd($this->request->getHeaderLine('Authorization'));
     }
 
 }

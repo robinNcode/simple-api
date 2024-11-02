@@ -30,13 +30,11 @@ class AuthService
      */
     public function authorize(RequestInterface $request): ?ResponseInterface
     {
+        $headers = $request->headers();
         $current_path = $request->getPath();
         if(in_array($current_path, $this->apiSecurityOptions->defaultExclusions)){
             return null;
         }
-
-        $headers = $request->headers();
-        //$token = $headers['Authorization']->getValue();
 
         // Check if browser is allowed ...
         if ($this->apiSecurityOptions->isCheckUserAgent) {
@@ -66,25 +64,44 @@ class AuthService
             }
         }
 
+
+        $token = $headers['Authorization']->getValue();
         if(empty($token)){
-            return $this->failUnauthorized('Token is required!');
+            return $this->failForbidden('Token is required!');
         }
         else{
-            $predis = new Client();
-            $users = new Users();
-
-            if(!$predis->exists($token)){
-                if($users->validateToken($token)){
-                    $predis->set($token, true);
-                }
-                else{
-                    // Token is invalid
-                    $else = 1;
-                }
+            $tokenData = $this->validateToken($request);
+            if(!$tokenData){
                 return $this->failUnauthorized('Invalid token!');
             }
         }
 
         return $this->respond('Token authorized successfully!');
+    }
+
+    /**
+     * Validates the provided token for an incoming request.
+     *
+     * @param RequestInterface $request
+     * @return bool|array Returns the token data if valid, otherwise false.
+     */
+    public function validateToken(RequestInterface $request): bool|array
+    {
+        $token = $request->getHeaderLine('Authorization');
+        $predis = new Client();
+
+        if (!$token) {
+            return false; // No token provided
+        }
+
+        // Check if the token exists in Redis
+        $tokenData = $predis->get("Bearer:{$token}");
+
+        if (!$tokenData) {
+            return false; // Token not found or expired
+        }
+
+        // Decode and return the token data
+        return json_decode($tokenData, true);
     }
 }
