@@ -10,7 +10,9 @@ $routes->get('/', 'Home::index');
 /**
  * Auth Routes
  */
+$routes->get('login', 'AuthController::loginView');
 $routes->post('login', 'AuthController::login');
+$routes->get('register', 'AuthController::registerView');
 $routes->post('register', 'AuthController::register');
 
 /**
@@ -37,7 +39,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
     });
 });
 
-$authService = service('auth');
+$authService = service('authService');
 
 // Protect the 'api' route with the 'auth' service
-$authService->routes(service('request'), ['api'], ['except' => ['login', 'register']]);
+$authService->routes(service('request'), 'api', ['except' => ['','login', 'register']]);

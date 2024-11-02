@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "657ac079313fab046eb8c29fe1d6992b",
+    "content-hash": "f08122c40048f2c65c7f7d970a3c2c58",
     "packages": [
         {
             "name": "codeigniter4/framework",
@@ -143,6 +143,67 @@
             "time": "2024-10-24T10:12:53+00:00"
         },
         {
+            "name": "predis/predis",
+            "version": "v2.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^8.0 || ~9.4.4"
+            },
+            "suggest": {
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-09-13T16:42:03+00:00"
+        },
+        {
             "name": "psr/log",
             "version": "3.0.2",
             "source": {
@@ -191,6 +252,57 @@
                 "source": "https://github.com/php-fig/log/tree/3.0.2"
             },
             "time": "2024-09-11T13:17:53+00:00"
+        },
+        {
+            "name": "robinncode/db_craft",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/robinNcode/db_craft.git",
+                "reference": "87be35a6475026baf65423485dae3e307e10737e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/robinNcode/db_craft/zipball/87be35a6475026baf65423485dae3e307e10737e",
+                "reference": "87be35a6475026baf65423485dae3e307e10737e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Robinncode\\DbCraft\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohammad Shahin Mia Robin",
+                    "email": "msmrobin518@gmail.com"
+                }
+            ],
+            "description": "DB Craft is a CodeIgniter4 Seeder, Migration Generator.     Automatic Migration Generation: DB-Craft provides a simple command-line interface to generate migration files automatically based on the connected database. This feature allows developers to keep track of database schema changes and easily apply them to different environments.    Table-Specific Migrations: Developers can also generate migration files for specific tables, providing granular control over database changes. This flexibility allows for efficient database management and versioning.    Seeding Support: DB-Craft includes functionality to generate seeders, enabling developers to populate their database with initial data. This feature is especially useful for setting up sample data or populating reference tables.",
+            "homepage": "https://github.com/robinNcode/db_craft",
+            "keywords": [
+                "CLI Tool",
+                "Connected Database",
+                "codeigniter4",
+                "migration",
+                "php",
+                "seeder"
+            ],
+            "support": {
+                "documentation": "https://github.com/robinNcode/db_craft/blob/master/README.md",
+                "email": "msmrobin518@gmail.com",
+                "issues": "https://github.com/robinNcode/db_craft/issues",
+                "source": "https://github.com/robinNcode/db_craft/tree/1.2.1"
+            },
+            "time": "2024-10-01T16:57:20+00:00"
         }
     ],
     "packages-dev": [

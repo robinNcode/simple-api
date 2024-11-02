@@ -22,13 +22,17 @@ class Services extends BaseService
 {
     /**
      * @param bool $getShared
-     * @return AuthService|object
+     * @return object
      */
-    public static function auth(bool $getShared = true){
+    public static function authService(bool $getShared = true): object
+    {
         if($getShared){
-            return static::getSharedInstance('authRouteProtector');
+            return static::getSharedInstance('authService');
         }
 
-        return new AuthService();
+        // Manually inject ResponseInterface when creating AuthService
+        $response = static::response();
+
+        return new AuthService($response);
     }
 }
