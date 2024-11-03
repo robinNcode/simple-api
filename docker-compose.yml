@@ -5,9 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: mfnextgencon
+    container_name: simple-api-con
     ports:
-      - "8081:8081"
+      - "8081:80"
     volumes:
       - ./:/var/www/html
     environment:
@@ -19,14 +19,15 @@ services:
 
   db:
     image: mysql:latest
-    container_name: mfnextgendbcon
+    container_name: simple-api-dbcon
     environment:
-      MYSQL_ROOT_PASSWORD: root_password        # This sets the root password
-      MYSQL_DATABASE: mfnextgen_test_db         # The database to create
-      MYSQL_USER: mfnextgen_ci4_user            # Use a different username
-      MYSQL_PASSWORD: ci4password               # Password for the new user
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: simple_api_db
+      MYSQL_USER: mfnextgen_ci4_user
+      MYSQL_PASSWORD: ci4password
     ports:
       - "3307:3306"
+    command: --default-authentication-plugin=mysql_native_password
     networks:
       - ci_network
 
