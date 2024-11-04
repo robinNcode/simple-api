@@ -63,9 +63,7 @@ class AuthService
             }
         }
 
-
-        $token = $headers['Authorization']->getValue();
-        if(empty($token)){
+        if(!isset($headers['Authorization']) || empty($headers['Authorization']->getValue())){
             return $this->failForbidden('Token is required!');
         }
         else{
