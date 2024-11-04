@@ -12,8 +12,8 @@
     "require": {
         "php": "^8.2",
         "codeigniter4/framework": "^4.0",
-        "predis/predis": "^2.2",
-        "robinncode/db_craft": "^1.2"
+        "robinncode/db_craft": "^1.2",
+        "ext-redis": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",

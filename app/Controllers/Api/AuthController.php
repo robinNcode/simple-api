@@ -4,8 +4,9 @@ use App\Controllers\BaseController;
 use App\Models\Users;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
-use Predis\Client;
 use Random\RandomException;
+use Redis;
+use RedisException;
 use ReflectionException;
 
 class AuthController extends BaseController
@@ -13,12 +14,12 @@ class AuthController extends BaseController
     use ResponseTrait;
 
     private Users $userModel;
-    private Client $redis;
+    private Redis $redis;
 
     public function __construct()
     {
         $this->userModel = new Users();
-        $this->redis = new Client();
+        $this->redis = new Redis();
     }
 
     /**
@@ -36,6 +37,7 @@ class AuthController extends BaseController
      * @return ResponseInterface
      * [POST] /login
      * @throws RandomException
+     * @throws RedisException
      */
     public function login(): ResponseInterface
     {
@@ -72,15 +74,15 @@ class AuthController extends BaseController
         return $this->failUnauthorized("Invalid login credentials!");
     }
 
-     /**
-      * Check if the user is already logged in with a valid token.
-      * @param int $userId
-      * @return bool|string Returns the token if valid, otherwise false.
-      */
-    public function isUserLoggedIn(int $userId): bool|string
+    /**
+     * Check if the user is already logged in with a valid token.
+     * @return bool|string Returns the token if valid, otherwise false.
+     */
+    public function isUserLoggedIn(): bool|string
     {
         // Check Redis for an existing token for the given user ID
-        $token = $this->redis->get("Bearer:{$userId}");
+        $headers = $this->request->headers();
+        $token = $headers['Authorization']->getValue();
 
         if ($token) {
             // Optionally, you can add extra checks here for the token's validity

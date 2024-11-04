@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Config\ApiSecurityConfig;
-use App\Models\Users;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use Predis\Client;
+use Redis;
+use RedisException;
 
 class AuthService
 {
@@ -27,6 +27,7 @@ class AuthService
      *
      * @param RequestInterface $request
      * @return  ResponseInterface|null if authorized, false otherwise
+     * @throws RedisException
      */
     public function authorize(RequestInterface $request): ?ResponseInterface
     {
@@ -81,14 +82,15 @@ class AuthService
      *
      * @param RequestInterface $request
      * @return bool|array Returns the token data if valid, otherwise false.
+     * @throws RedisException
      */
     public function validateToken(RequestInterface $request): bool|array
     {
         $token = $request->getHeaderLine('Authorization');
-        $predis = new Client();
+        $redis = new Redis();
 
         if (!empty($token)) {
-            $tokenData = $predis->get($token);
+            $tokenData = $redis->get($token);
             // Decode and return the token data
             if(!empty($tokenData)){
                 return json_decode($tokenData, true);
