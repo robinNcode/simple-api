@@ -14,7 +14,10 @@ RUN apt-get update && apt-get install -y \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
-    && docker-php-ext-install pdo mysqli pdo_mysql mbstring exif pcntl bcmath opcache intl
+    && docker-php-ext-install pdo mysqli pdo_mysql mbstring exif pcntl bcmath opcache intl\
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && rm -rf /var/lib/apt/lists/* # Clean up to reduce image size
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
