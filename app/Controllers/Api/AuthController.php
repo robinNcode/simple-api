@@ -9,6 +9,12 @@ use Redis;
 use RedisException;
 use ReflectionException;
 
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="Operations about authentication"
+ * )
+ */
 class AuthController extends BaseController
 {
     use ResponseTrait;
@@ -22,22 +28,50 @@ class AuthController extends BaseController
         $this->redis = new Redis();
     }
 
-    /**
-     * Login view...
-     * @return string
-     * [GET] /login
-     */
     public function loginView(): string
     {
         return view('auth/login');
     }
 
     /**
-     * Log the user in...
-     * @return ResponseInterface
-     * [POST] /login
-     * @throws RandomException
-     * @throws RedisException
+     * @OA\POST (
+     *     path="/api/v1/login",
+     *     tags={"Auth"},
+     *     summary="Login Request",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="User login credentials",
+     *          @OA\JsonContent(
+     *              required={"email", "password"},
+     *              @OA\Property(property="email", type="string", format="email", example="dummyemali@gmail.com"),
+     *              @OA\Property(property="password", type="string", format="password", example="password123")
+     *         )
+     *    ),
+     *    @OA\Response(
+     *     response=200,
+     *     description="Login successful",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="token", type="string", example="Bearer:token...."),
+     *       @OA\Property(property="expires_in", type="integer", example="3600")
+     *    )
+     *   ),
+     *   @OA\Response(
+     *     response=403,
+     *     description="Invalid login credentials"
+     *  ),
+     *  @OA\Response(
+     *     response=401,
+     *     description="User already logged in"
+     * ),
+     * @OA\Response(
+     *     response=500,
+     *     description="Internal Server error"
+     * ),
+     * @OA\Response(
+     *     response=404,
+     *     description="User not found"
+     * )
+     * )
      */
     public function login(): ResponseInterface
     {
@@ -46,7 +80,7 @@ class AuthController extends BaseController
         // Validate user credentials
         $user = $this->userModel->where('email', $email)->first();
 
-        if($this->isUserLoggedIn($user['id'])){
+        if ($this->isUserLoggedIn()) {
             return $this->fail('User already logged in!');
         }
 
@@ -128,14 +162,13 @@ class AuthController extends BaseController
             'password' => $this->request->getPost('password')
         ];
 
-        if($this->userModel->insert($postedData)){
+        if ($this->userModel->insert($postedData)) {
             $data = [
                 'status' => ResponseInterface::HTTP_OK,
                 'status_type' => 'success',
                 'message' => 'User registered successfully!',
             ];
-        }
-        else{
+        } else {
             $data = [
                 'status' => ResponseInterface::HTTP_NOT_FOUND,
                 'status_type' => 'error',

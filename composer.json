@@ -11,9 +11,11 @@
     },
     "require": {
         "php": "^8.2",
+        "ext-redis": "*",
         "codeigniter4/framework": "^4.0",
+        "doctrine/annotations": "^2.0",
         "robinncode/db_craft": "^1.2",
-        "ext-redis": "*"
+        "zircote/swagger-php": "^4.11"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",
