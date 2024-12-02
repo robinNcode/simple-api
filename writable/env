@@ -15,14 +15,15 @@
 #--------------------------------------------------------------------
 
 # CI_ENVIRONMENT = production
-CI_ENVIRONMENT = development
+CI_ENVIRONMENT=development
 
 #--------------------------------------------------------------------
 # APP
 #--------------------------------------------------------------------
 
-app.baseURL = 'http://localhost:7071/'
-app.indexPage = ''
+#app.baseURL='http://localhost:7071/'
+app.baseURL='http://192.168.26.65:8081/'
+app.indexPage=''
 # If you have trouble with `.`, you could also use `_`.
 # app_baseURL = ''
 # app.forceGlobalSecureRequests = false
@@ -32,13 +33,21 @@ app.indexPage = ''
 # DATABASE
 #--------------------------------------------------------------------
 
-database.default.hostname = localhost
-database.default.database = microfin_v3_sbs
-database.default.username = root
-database.default.password =
-database.default.DBDriver = MySQLi
-database.default.DBPrefix =
-database.default.port = 3306
+# database.default.hostname=localhost
+# database.default.database=microfin_v3_sbs
+# database.default.username=root
+# database.default.password=
+# database.default.DBDriver=MySQLi
+# database.default.DBPrefix=
+# database.default.port=3306
+
+database.default.hostname=db
+database.default.database=simple_api_db
+database.default.username=mfnextgen_ci4_user
+database.default.password=ci4password
+database.default.DBDriver=MySQLi
+database.default.DBPrefix=
+database.default.port=3306
 
 # If you use MySQLi as tests, first update the values of Config\Database::$tests.
 # database.tests.hostname = localhost
@@ -73,7 +82,7 @@ database.default.port = 3306
 #--------------------------------------------------------------------
 # API SECURITY OPTIONS
 #--------------------------------------------------------------------
-apiSecurityConfig.isCheckMethod = true
-apiSecurityConfig.isCheckUserAgent = true
-apiSecurityConfig.isCheckOrigin = true
-apiSecurityConfig.isCheckOs = true
+apiSecurityConfig.isCheckMethod=true
+apiSecurityConfig.isCheckUserAgent=true
+apiSecurityConfig.isCheckOrigin=true
+apiSecurityConfig.isCheckOs=true
