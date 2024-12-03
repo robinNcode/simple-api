@@ -34,4 +34,7 @@ RUN chown -R www-data:www-data /var/www/html
 RUN find /var/www/html -type d -exec chmod 755 {} \;
 RUN find /var/www/html -type f -exec chmod 644 {} \;
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* # Clean up to reduce image size
