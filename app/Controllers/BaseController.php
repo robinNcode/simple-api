@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
  *     description="API documentation for CodeIgniter 4 project"
  * )
  * @OA\Server(
- *     url="http://localhost:7071/",
+ *     url="http://192.168.26.65:8081/public/",
  *     description="Development server"
  * )
  */

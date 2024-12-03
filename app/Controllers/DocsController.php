@@ -17,7 +17,8 @@ class DocsController extends BaseController
         $swaggerContent = $openapi->toJson();
 
         // Save the generated OpenAPI content to a file
-        $filePath = FCPATH . 'swagger_ui/swagger.json';
+        $dir = FCPATH . 'public/swagger_ui/';
+        $filePath = $dir . 'swagger.json';
         file_put_contents($filePath, $swaggerContent);
 
         return view('swagger_docs/index');
