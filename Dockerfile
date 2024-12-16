@@ -40,4 +40,7 @@ RUN chmod -R 777 /var/www/html/public/swagger_ui;
 # Install composer
 COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* # Clean up to reduce image size

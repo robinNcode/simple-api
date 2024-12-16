@@ -6,9 +6,13 @@ use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
 use ReflectionException;
 
+/**
+ * @OA\Info(title="Simple API", version="1.0")
+ */
 class EmployeeController extends BaseController
 {
     use ResponseTrait;
+
     private Employees $employees;
 
     public function __construct()
@@ -20,7 +24,23 @@ class EmployeeController extends BaseController
      * Display a listing of the resource ...
      * @return ResponseInterface
      * [GET] /employee
+     *
+     * @OA\Get(
+     * path="/items",
+     * tags={"Items"},
+     * summary="Get list of items",
+     * description="Returns a list of items",
+     * @OA\Response(
+     * response=200,
+     * description="Successful operation",
+     * ),
+     * @OA\Response(
+     * response=400,
+     * description="Bad request"
+     * )
+     * )
      */
+
     public function index(): ResponseInterface
     {
         return $this->respond($this->employees->employeeWithDepartments());
@@ -63,7 +83,7 @@ class EmployeeController extends BaseController
             'nominee_info' => $this->request->getPost('nominee_info')
         ];
 
-        if($this->employees->insert($employeeInfo)){
+        if ($this->employees->insert($employeeInfo)) {
             return $this->respond(['message' => 'Employee created successfully']);
         }
 
@@ -79,7 +99,7 @@ class EmployeeController extends BaseController
     public function show($id = null): ResponseInterface
     {
         $employee = $this->employees->employeeWithDepartments($id);
-        if($employee){
+        if ($employee) {
             return $this->respond($employee);
         }
         return $this->failNotFound('Employee not found');
@@ -103,7 +123,7 @@ class EmployeeController extends BaseController
             'department_id' => $this->request->getPost('department_id'),
         ];
 
-        if($this->employees->update($id, $employeeInfo)){
+        if ($this->employees->update($id, $employeeInfo)) {
             return $this->respond(['message' => 'Employee updated successfully']);
         }
 
@@ -118,7 +138,7 @@ class EmployeeController extends BaseController
      */
     public function delete($id = null): ResponseInterface
     {
-        if($this->employees->delete($id)){
+        if ($this->employees->delete($id)) {
             return $this->respond(['message' => 'Employee deleted successfully']);
         }
 
