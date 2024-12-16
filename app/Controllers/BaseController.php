@@ -10,14 +10,15 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class BaseController
- *
- * BaseController provides a convenient place for loading components
- * and performing functions that are needed by all your controllers.
- * Extend this class in any new controllers:
- *     class Home extends BaseController
- *
- * For security be sure to declare any new methods as protected or private.
+ * @OA\Info(
+ *     title="CodeIgniter4 Simple API",
+ *     version="1.0.0",
+ *     description="API documentation for CodeIgniter 4 project"
+ * )
+ * @OA\Server(
+ *     url="http://192.168.26.65:8081/public/",
+ *     description="Development server"
+ * )
  */
 abstract class BaseController extends Controller
 {

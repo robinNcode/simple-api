@@ -15,6 +15,9 @@ $routes->post('login', 'Api\AuthController::login');
 $routes->get('register', 'Api\AuthController::registerView');
 $routes->post('register', 'Api\AuthController::register');
 
+// Create API documentation ...
+$routes->get('api/v1/docs', 'DocsController::generate');
+
 /**
  * API Routes
  */

@@ -33,6 +33,12 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN find /var/www/html -type d -exec chmod 755 {} \;
 RUN find /var/www/html -type f -exec chmod 644 {} \;
+RUN mkdir -p /var/www/html/public/swagger_ui;
+RUN chmod -R 777 /var/www/html/public/swagger_ui;
+
+
+# Install composer
+COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

@@ -1,0 +1,101 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CodeIgniter4 Simple API",
+        "description": "API documentation for CodeIgniter 4 project",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://192.168.26.65:8081/public/",
+            "description": "Development server"
+        }
+    ],
+    "paths": {
+        "/test": {
+            "get": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Test Controller",
+                "operationId": "99ae5b812935317c3eb8848ea2127ee5",
+                "responses": {
+                    "200": {
+                        "description": "Test successful"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "responses": {
+            "200": {
+                "description": "Login successful",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "token": {
+                                    "type": "string",
+                                    "example": "Bearer:token...."
+                                },
+                                "expires_in": {
+                                    "type": "integer",
+                                    "example": "3600"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "Invalid login credentials"
+            },
+            "401": {
+                "description": "User already logged in"
+            },
+            "500": {
+                "description": "Internal Server error"
+            },
+            "404": {
+                "description": "User not found"
+            }
+        },
+        "requestBodies": {
+            "application/json": {
+                "description": "User login credentials",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "email",
+                                "password"
+                            ],
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "format": "email",
+                                    "example": "dummyemali@gmail.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "format": "password",
+                                    "example": "password123"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Test",
+            "description": "Test"
+        }
+    ]
+}
